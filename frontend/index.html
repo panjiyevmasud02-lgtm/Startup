@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TwinCare AI — Klinik Digital Twin va Tibbiy Intellekt Platformasi</title>
+  <meta name="description" content="Digital Twin modellashtirish, muolajalarni sinash, AI konsultatsiya yozuvchisi va dorixona prognozlari platformasi.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- DEMO MODE BANNER -->
+  <div class="demo-banner">
+    <div class="demo-banner-left">
+      <span class="badge-demo"><i class="fa-solid fa-flask"></i> DEMO REJIM</span>
+      <span data-i18n="demoBanner">SINTETIK DEMO REJIM — SHAXSIY TIBBIY MA'LUMOTLAR EMAS — O'ZBEKISTON</span>
+    </div>
+    <div class="demo-banner-right">
+      <span style="font-size: 0.75rem; opacity: 0.95;"><i class="fa-solid fa-shield-halved"></i> HIPAA Standartlari • O'zbekiston</span>
+    </div>
+  </div>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="brand-logo" onclick="switchTab('patients')">
+      <div class="brand-icon">
+        <i class="fa-solid fa-dna"></i>
+      </div>
+      <div>
+        <span data-i18n="brandName" class="brand-name-text">TwinCare AI</span>
+        <span class="brand-tag">KLINIK AI</span>
+      </div>
+    </div>
+
+    <!-- Global Search -->
+    <div class="header-search">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="globalSearchInput" placeholder="Bemorlar, shifokorlar, protokollar va dorilarni qidirish..." data-i18n="searchPlaceholder" autocomplete="off" />
+      <div id="searchResultsDropdown" class="search-results-dropdown"></div>
+    </div>
+
+    <!-- Right Controls: Profile Avatar Button (Clicking opens Profile & Settings Modal) -->
+    <div class="header-actions">
+      <div class="header-avatar-only-btn" id="headerUserProfileBtn" onclick="openUserProfileModal()" title="Mening Profilim va Sozlamalar">
+        <div id="headerAvatarContainer" style="display: flex; align-items: center; gap: 10px;">
+          <div class="user-avatar" id="headerAvatarIcon">BT</div>
+          <span id="sessionUsernameBadge" style="font-size: 0.85rem; font-weight: 700; color: var(--primary-teal);">@botir_toshmatov</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER -->
+  <div class="app-container">
+    
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="app-sidebar">
+      <div class="sidebar-nav-scroll">
+        <div class="nav-group">
+          <div class="nav-group-title" data-i18n="navPlatformModules">Platforma Modullari</div>
+          <ul class="nav-menu" id="sidebarNavMenu">
+            <li class="nav-item" data-roles="admin">
+              <a href="#" class="nav-link" data-tab="dashboard">
+                <i class="fa-solid fa-chart-line"></i> <span data-i18n="navDashboard">Boshqaruv Paneli</span>
+              </a>
+            </li>
+            <li class="nav-item" data-roles="doctor,admin">
+              <a href="#" class="nav-link active" data-tab="patients">
+                <i class="fa-solid fa-user-group"></i> <span data-i18n="navPatients">Bemorlar Katalogi</span>
+              </a>
+            </li>
+            <li class="nav-item" data-roles="doctor,patient,admin">
+              <a href="#" class="nav-link" data-tab="digital-twins">
+                <i class="fa-solid fa-dna"></i> <span data-i18n="navDigitalTwins">Digital Twin Maydoni</span>
+              </a>
+            </li>
+            <li class="nav-item" data-roles="patient,admin">
+              <a href="#" class="nav-link" data-tab="doctors">
+                <i class="fa-solid fa-user-doctor"></i> <span data-i18n="navDoctors">Shifokorlar Katalogi</span>
+              </a>
+            </li>
+            <li class="nav-item" data-roles="doctor,patient,admin">
+              <a href="#" class="nav-link" data-tab="ai-assistant">
+                <i class="fa-solid fa-microphone"></i> <span data-i18n="navAiAssistant">AI Konsultatsiya Yozuvchisi</span>
+              </a>
+            </li>
+            <li class="nav-item" data-roles="doctor,admin">
+              <a href="#" class="nav-link" data-tab="my-feedbacks">
+                <i class="fa-solid fa-comments"></i> <span data-i18n="navMyFeedbacks">Mening Fikrlarim</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-title" data-i18n="navKnowledgeIntel">Bilim va Intellekt</div>
+          <ul class="nav-menu">
+            <li class="nav-item" data-roles="researcher,admin">
+              <a href="#" class="nav-link" data-tab="knowledge">
+                <i class="fa-solid fa-book-medical"></i> <span data-i18n="navKnowledge">Tibbiy Bilimlar Bazasi</span>
+              </a>
+            </li>
+            <li class="nav-item" data-roles="researcher,admin">
+              <a href="#" class="nav-link" data-tab="research">
+                <i class="fa-solid fa-flask"></i> <span data-i18n="navResearch">Tadqiqot Platformasi</span>
+              </a>
+            </li>
+            <li class="nav-item" data-roles="pharmacy,admin">
+              <a href="#" class="nav-link" data-tab="pharmacy">
+                <i class="fa-solid fa-prescription-bottle-medical"></i> <span data-i18n="navPharmacy">Dorixona Prognozlari</span>
+              </a>
+            </li>
+            <li class="nav-item" data-roles="admin">
+              <a href="#" class="nav-link" data-tab="dmed">
+                <i class="fa-solid fa-diagram-project"></i> <span data-i18n="navDmed">DMED Integratsiyasi</span>
+              </a>
+            </li>
+            <li class="nav-item" id="navAdminPanelItem" style="display: none;" data-roles="admin">
+              <a href="#" class="nav-link" data-tab="admin-panel" style="color: var(--accent-rose);">
+                <i class="fa-solid fa-user-shield" style="color: var(--accent-rose);"></i> <span data-i18n="navAdminPanel">Admin Panel</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT VIEW PANES -->
+    <main class="main-content">
+
+      <!-- SAFETY DISCLAIMER BANNER -->
+      <div class="safety-disclaimer" style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.2); color: #0284C7;">
+        <i class="fa-solid fa-circle-info"></i>
+        <div data-i18n="safetyNotice">
+          TIBBIY XAVFSIZLIK: Tizim biologik modellashtirish hisoblarini taqdim etadi. Yakuniy klinik qaror mas'ul shifokor zimmasidadir.
+        </div>
+      </div>
+
+      <!-- TAB 1: DASHBOARD (ADMIN ONLY) -->
+      <div id="tab-dashboard" class="tab-pane">
+        <div class="page-header" style="margin-bottom: 20px;">
+          <div class="page-title-group">
+            <h1 data-i18n="dashTitle">Sog'liqni Saqlash AI Boshqaruv Markazi</h1>
+            <p data-i18n="dashSubtitle">Digital Twinlar va klinik intellektning real vaqtdagi umumiy ko'rinishi.</p>
+          </div>
+        </div>
+        <div id="dashboardStats" class="grid-4" style="margin-bottom: 24px;"></div>
+      </div>
+
+      <!-- TAB 2: PATIENTS DIRECTORY (SHIFOKOR PROFILE) -->
+      <div id="tab-patients" class="tab-pane active">
+        <div class="page-header" style="margin-bottom: 20px;">
+          <div class="page-title-group">
+            <h1 data-i18n="navPatients">Bemorlar Katalogi</h1>
+            <p data-i18n="patientDirSubtitle">Sizga biriktirilgan bemorlarning to'liq biografiyasi, dori-darmon tarixi va ko'rsatkichlari.</p>
+          </div>
+          <div class="page-actions">
+            <input type="text" id="patientFilterSearch" class="form-input" style="width: 260px;" placeholder="Bemor ismi bo'yicha qidiruv..." onkeyup="filterPatientsList()" />
+          </div>
+        </div>
+        <div id="patientsDirectoryGrid" class="grid-2"></div>
+      </div>
+
+      <!-- TAB 3: DIGITAL TWINS WORKSPACE -->
+      <div id="tab-digital-twins" class="tab-pane">
+        <div class="page-header" style="margin-bottom: 20px;">
+          <div class="page-title-group">
+            <h1 data-i18n="twinTitle">Bemor Digital Twin Maydoni</h1>
+            <p data-i18n="twinSubtitle">Biomarkerlar tendensiyasi, muolajalarni sinash va shaxsiy davolanish xaritasi.</p>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <label style="font-size: 0.8rem; color: var(--text-muted);" data-i18n="selectPatient">Bemor Twinini Tanlang:</label>
+            <select id="twinPatientSelect" class="form-select" style="width: 240px;" onchange="loadSelectedPatientTwin(this.value)"></select>
+          </div>
+        </div>
+
+        <div class="twin-workflow-bar">
+          <div class="workflow-step active"><span class="step-num">1</span> <span data-i18n="stepPatientData">Bemor Ma'lumotlari</span></div>
+          <div class="workflow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+          <div class="workflow-step active"><span class="step-num">2</span> <span data-i18n="stepClinicalData">Klinik Tahlillar</span></div>
+          <div class="workflow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+          <div class="workflow-step active"><span class="step-num">3</span> <span data-i18n="stepDigitalTwin">Digital Twin Modeli</span></div>
+          <div class="workflow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+          <div class="workflow-step active"><span class="step-num">4</span> <span data-i18n="stepDiseaseTrajectory">Kasallik Traektoriyasi</span></div>
+          <div class="workflow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+          <div class="workflow-step active"><span class="step-num">5</span> <span data-i18n="stepTreatmentScenarios">Muolaja Ssenariylari</span></div>
+        </div>
+
+        <div id="patientTwinHeader"></div>
+
+        <div class="grid-2" style="margin-bottom: 24px;">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-chart-line" style="color: var(--primary-teal);"></i> <span data-i18n="biomarkerTrendTitle">Biomarker Tarixi va Hozirgi Holati</span>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <button class="btn btn-secondary btn-sm" onclick="changeBiomarkerChartMetric('HbA1c')">HbA1c Qand</button>
+                <button class="btn btn-secondary btn-sm" onclick="changeBiomarkerChartMetric('eGFR')">eGFR Buyrak</button>
+                <button class="btn btn-secondary btn-sm" onclick="changeBiomarkerChartMetric('systolicBP')">Qon Bosimi</button>
+              </div>
+            </div>
+            <div style="height: 280px; position: relative;">
+              <canvas id="biomarkerChart"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-file-medical" style="color: var(--accent-amber);"></i> <span data-i18n="diseaseTherapyTitle">Surunkali Kasalliklar va Terapiya Profili</span>
+              </div>
+            </div>
+            <div id="twinDiseaseCards"></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-prescription-bottle-medical" style="color: var(--primary-teal);"></i> <span data-i18n="medTimelineTitle">Dori-Darmon Tarixi</span>
+              </div>
+            </div>
+            <div id="medicationTimelineContent"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-calendar-check" style="color: var(--accent-emerald);"></i> <span data-i18n="dailyAssistantTitle">Kunlik Bemor Eslatmalari</span>
+              </div>
+            </div>
+            <div id="dailyRemindersList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: DOCTORS DIRECTORY (BEMOR PROFILE) -->
+      <div id="tab-doctors" class="tab-pane">
+        <div class="page-header" style="margin-bottom: 20px;">
+          <div class="page-title-group">
+            <h1 data-i18n="doctorsTitle">Shifokorlar Katalogi</h1>
+            <p data-i18n="doctorsSubtitle">O'zbekiston bo'yicha tasdiqlangan mutaxassislar va bemorlar baholash tizimi.</p>
+          </div>
+        </div>
+        <div id="doctorsGrid" class="grid-3"></div>
+      </div>
+
+      <!-- TAB 5: AI CONSULTATION ASSISTANT -->
+      <div id="tab-ai-assistant" class="tab-pane">
+        <div class="page-header" style="margin-bottom: 20px;">
+          <div class="page-title-group">
+            <h1 data-i18n="aiTitle">AI Konsultatsiya Yozuvchisi & Avto-Tashxis</h1>
+            <p data-i18n="aiSubtitle">Shifokor va bemor muloqotini yozib oladi va darhol klinik tashxis qo'yadi.</p>
+          </div>
+        </div>
+
+        <div class="recorder-box">
+          <button id="toggleMicBtn" class="record-mic-btn" onclick="toggleMicRecording()">
+            <i class="fa-solid fa-microphone"></i>
+          </button>
+          <div id="recordStatusLabel" style="font-weight: 700; margin-bottom: 8px;" data-i18n="clickToRecord">Jonli Konsultatsiyani Yozib Olish Uchun Boshing</div>
+          
+          <div id="waveformBox" class="waveform-bars">
+            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+          </div>
+
+          <div class="transcript-feed" id="transcriptFeed">
+            <div style="color: var(--text-muted); font-size: 0.85rem; text-align: center;" data-i18n="micPlaceholder">Ovozli muloqot yozib olish boshlangach matn bu yerda ko'rinadi...</div>
+          </div>
+        </div>
+
+        <div id="aiSummaryBox" style="margin-top: 24px;"></div>
+      </div>
+
+      <!-- TAB 6: MY FEEDBACKS (SHIFOKOR PROFILE) -->
+      <div id="tab-my-feedbacks" class="tab-pane">
+        <div class="page-header" style="margin-bottom: 20px;">
+          <div class="page-title-group">
+            <h1 data-i18n="myFeedbacksTab">Mening Anonim Fikrlarim</h1>
+            <p data-i18n="doctorFeedbacksTitle">Bemorlardan kelib tushgan barcha anonim baholar va izohlar ko'rinishi.</p>
+          </div>
+        </div>
+        <div id="dedicatedFeedbacksContainer" class="grid-2"></div>
+      </div>
+
+      <!-- TAB 7: MEDICAL KNOWLEDGE BASE (TADQIQOTCHI PROFILE) -->
+      <div id="tab-knowledge" class="tab-pane">
+        <div class="page-header" style="margin-bottom: 20px;">
+          <div class="page-title-group">
+            <h1 data-i18n="protocolsTitle">O'zbekiston Tibbiy Bilimlar Bazasi</h1>
+            <p data-i18n="protocolsSubtitle">Rasmiy davolash ko'rsatmalari va XKB-10 (ICD-10) klinik kodlari.</p>
+          </div>
+        </div>
+        <div id="protocolsList"></div>
+      </div>
+
+      <!-- TAB 8: RESEARCH PLATFORM (TADQIQOTCHI PROFILE) -->
+      <div id="tab-research" class="tab-pane">
+        <div class="page-header" style="margin-bottom: 20px;">
+          <div class="page-title-group">
+            <h1 data-i18n="researchTitle">Tadqiqot Bo'limi va Datasetlar</h1>
+            <p data-i18n="researchSubtitle">Viloyat, tuman, yosh, jinsi va kasallik turi bo'yicha tadqiqot tahlillari.</p>
+          </div>
+        </div>
+
+        <!-- Research Filters -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div style="font-weight: 700; margin-bottom: 12px; font-size: 0.9rem; color: var(--primary-teal);">
+            <i class="fa-solid fa-filter"></i> Tadqiqot parametrlarini tanlash:
+          </div>
+          <div class="grid-4" style="gap: 12px;">
+            <div>
+              <label class="form-label">Viloyat</label>
+              <select id="resFilterRegion" class="form-select" onchange="updateResearchDistrictOptions(); renderResearchPlatform();">
+                <option value="all">Barcha Viloyatlar</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Tuman</label>
+              <select id="resFilterDistrict" class="form-select" onchange="renderResearchPlatform();">
+                <option value="all">Barcha Tumanlar</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Yosh Guruhi</label>
+              <select id="resFilterAge" class="form-select" onchange="renderResearchPlatform();">
+                <option value="all">Barcha Yoshlar</option>
+                <option value="18-39">18 – 39 Yosh</option>
+                <option value="40-60">40 – 60 Yosh</option>
+                <option value="60+">60+ Yosh</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Jinsi</label>
+              <select id="resFilterGender" class="form-select" onchange="renderResearchPlatform();">
+                <option value="all">Barchasi (Erkak / Ayol)</option>
+                <option value="Ayol">Ayol</option>
+                <option value="Erkak">Erkak</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="researchDatasetsGrid"></div>
+      </div>
+
+      <!-- TAB 9: PHARMACY INTELLIGENCE (DORIXONA EGASI PROFILE) -->
+      <div id="tab-pharmacy" class="tab-pane">
+        <div class="page-header" style="margin-bottom: 20px;">
+          <div class="page-title-group">
+            <h1 data-i18n="pharmacyTitle">Dorixona Prognozlari Bo'limi</h1>
+            <p data-i18n="pharmacySubtitle">O'zbekiston viloyatlari va tumanlari bo'yicha 20+ dori vositalari o'tgan oyga nisbatan sotilish o'sishi bashorati.</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 24px; background: #F0F9FF; border-color: var(--border-color);">
+          <div style="font-weight: 700; margin-bottom: 12px; color: var(--primary-teal); font-size: 0.95rem;">
+            <i class="fa-solid fa-map-location-dot"></i> Dorixona Hududini Tanlang:
+          </div>
+          <div class="grid-3" style="gap: 16px; align-items: flex-end;">
+            <div>
+              <label class="form-label">Viloyatni Tanlang</label>
+              <select id="pharmacyRegionSelect" class="form-select" onchange="updatePharmacyDistrictOptions(); renderPharmacyIntelligence();"></select>
+            </div>
+            <div>
+              <label class="form-label">Tumanni Tanlang</label>
+              <select id="pharmacyDistrictSelect" class="form-select" onchange="renderPharmacyIntelligence();"></select>
+            </div>
+            <div>
+              <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="renderPharmacyIntelligence()">
+                <i class="fa-solid fa-chart-pie"></i> Analiz Qilish
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="pharmacyForecastGrid" class="grid-2"></div>
+      </div>
+
+      <!-- TAB 10: DMED INTEGRATION ARCHITECTURE (ADMIN ONLY) -->
+      <div id="tab-dmed" class="tab-pane">
+        <div class="page-header" style="margin-bottom: 20px;">
+          <div class="page-title-group">
+            <h1 data-i18n="dmedTitle">DMED Integratsiya Ko'prigi</h1>
+            <p data-i18n="dmedSubtitle">O'zbekiston DMED milliy tizimi bilan integratsiya ko'prigi.</p>
+          </div>
+        </div>
+        <div class="card" style="text-align: center; padding: 40px;">
+          <span class="badge badge-rose" style="font-size: 1rem; padding: 8px 16px; margin-bottom: 16px;">
+            <i class="fa-solid fa-link-slash"></i> DMED Holati: Ulanmagan (Rasmiy API kutilmoqda)
+          </span>
+        </div>
+      </div>
+
+      <!-- TAB 11: ADMIN PANEL (ADMIN ONLY) -->
+      <div id="tab-admin-panel" class="tab-pane">
+        <div class="page-header" style="margin-bottom: 20px;">
+          <div class="page-title-group">
+            <h1 style="color: var(--accent-rose);" data-i18n="adminPanelTitle"><i class="fa-solid fa-user-shield"></i> Tizim Admin Paneli</h1>
+            <p data-i18n="adminPanelSubtitle">Barcha bo'limlarni boshqarish va audit nazorati.</p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <footer style="background: #FFFFFF; border-top: 1px solid var(--border-color); padding: 16px 24px; display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);">
+    <div><strong>TwinCare AI Platformasi</strong> — O'zbekiston Klinik Digital Twin Tizimi</div>
+    <div><i class="fa-solid fa-shield"></i> Rol: <strong id="footerRoleLabel" style="color: var(--primary-teal);">Shifokor</strong> • O'zbekiston</div>
+  </footer>
+
+  <!-- MODAL: USER PROFILE & SETTINGS (WITH AVATAR PHOTO UPLOAD, ISMI, FAMILIYA, USERNAME, SAVE & INSIDE LOGOUT BUTTON) -->
+  <div id="userProfileSettingsModal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 520px;">
+      <button class="modal-close" onclick="closeModal('userProfileSettingsModal')"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+        <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--primary-teal);"><i class="fa-solid fa-user-gear"></i> Mening Profilim va Sozlamalar</h2>
+      </div>
+
+      <form onsubmit="saveUserProfile(event)">
+        <!-- Avatar Upload -->
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px; background: #F0F9FF; border: 1px solid var(--border-color); padding: 14px; border-radius: var(--radius-md);">
+          <div id="modalAvatarPreviewContainer">
+            <div class="user-avatar" style="width: 54px; height: 54px; font-size: 1.2rem;" id="modalAvatarIcon">BT</div>
+          </div>
+          <div style="flex: 1;">
+            <label class="form-label" style="margin-bottom: 4px;">Profil Rasmini Yuklash / O'zgartirish</label>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <label for="userAvatarFileInput" class="btn btn-secondary btn-sm" style="padding: 5px 12px; font-size: 0.78rem; cursor: pointer;">
+                <i class="fa-solid fa-camera" style="color: var(--primary-teal);"></i> <span>Rasm Tanlang</span>
+              </label>
+              <input type="file" id="userAvatarFileInput" accept="image/*" style="display: none;" onchange="handleAvatarFileSelect(event)" />
+              <span id="avatarFileNameDisplay" style="font-size: 0.75rem; color: var(--text-muted);">JPG, PNG</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Username / Login -->
+        <div class="form-group">
+          <label class="form-label">Username / Login (@nikingiz)</label>
+          <div style="position: relative;">
+            <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--primary-teal); font-weight: 700;">@</span>
+            <input type="text" id="userUsernameInput" class="form-input" style="padding-left: 28px;" required />
+          </div>
+        </div>
+
+        <!-- Ism va Familiya -->
+        <div class="grid-2" style="gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Ism</label>
+            <input type="text" id="userFirstNameInput" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Familiya</label>
+            <input type="text" id="userLastNameInput" class="form-input" required />
+          </div>
+        </div>
+
+        <!-- Role Display (Read-only badge) -->
+        <div style="background: #F0F9FF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.82rem; color: var(--text-muted);">Biriktirilgan Tizim Roli:</span>
+          <span class="badge badge-teal" id="modalRoleDisplayTag">Shifokor</span>
+        </div>
+
+        <!-- Action Footer: INSIDE LOGOUT BUTTON + Save / Close -->
+        <div style="display: flex; gap: 10px; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 16px;">
+          <button type="button" class="btn btn-danger btn-sm" onclick="handleLogout()">
+            <i class="fa-solid fa-right-from-bracket"></i> <span>Profildan Chiqish</span>
+          </button>
+          
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('userProfileSettingsModal')">Yopish</button>
+            <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-floppy-disk"></i> <span>Profilni Saqlash</span></button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: AUTHENTICATION & REGISTRATION -->
+  <div id="authModal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 480px; text-align: center;">
+      <div class="brand-icon" style="margin: 0 auto 12px; width: 50px; height: 50px; font-size: 1.5rem;">
+        <i class="fa-solid fa-dna"></i>
+      </div>
+      <h2 style="margin-bottom: 4px; color: var(--primary-teal);" data-i18n="brandName">TwinCare AI</h2>
+      <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 20px;" data-i18n="authTitle">Tizimga Kirish va Ro'yxatdan O'tish</p>
+
+      <div style="display: flex; background: #F0F9FF; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 4px; margin-bottom: 20px;">
+        <button id="authLoginTabBtn" class="btn btn-sm" style="flex: 1; background: var(--primary-teal); color: #fff;" onclick="switchAuthTab('login')">
+          <i class="fa-solid fa-right-to-bracket"></i> <span data-i18n="loginTab">Kirish</span>
+        </button>
+        <button id="authRegisterTabBtn" class="btn btn-sm" style="flex: 1; background: transparent; color: var(--text-muted);" onclick="switchAuthTab('register')">
+          <i class="fa-solid fa-user-plus"></i> <span data-i18n="registerTab">Ro'yxatdan O'tish</span>
+        </button>
+      </div>
+
+      <form id="loginForm" onsubmit="handleLoginSubmit(event)" style="text-align: left;">
+        <div id="loginAuthError" style="display: none; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #E11D48; border-radius: var(--radius-md); padding: 10px; font-size: 0.82rem; font-weight: 700; margin-bottom: 14px;">
+          Login yoki parol xato!
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" data-i18n="username">Username / Login</label>
+          <input type="text" id="loginUsername" class="form-input" placeholder="@botir_toshmatov" value="botir_toshmatov" required autocomplete="off" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="password">Parol</label>
+          <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" value="password123" required autocomplete="off" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 10px;">
+          <i class="fa-solid fa-right-to-bracket"></i> <span data-i18n="loginBtn">Kirish</span>
+        </button>
+      </form>
+
+      <form id="registerForm" onsubmit="handleRegisterSubmit(event)" style="text-align: left; display: none;">
+        <div class="form-group">
+          <label class="form-label" data-i18n="username">Username (@nikingiz)</label>
+          <input type="text" id="regUsername" class="form-input" placeholder="@username" required />
+        </div>
+        <div class="grid-2" style="gap: 10px;">
+          <div class="form-group">
+            <label class="form-label">Ism</label>
+            <input type="text" id="regFirstName" class="form-input" placeholder="Ismingiz" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Familiya</label>
+            <input type="text" id="regLastName" class="form-input" placeholder="Familiyangiz" required />
+          </div>
+        </div>
+        
+        <div class="form-group" style="background: #F0F9FF; border: 1px solid var(--primary-teal); border-radius: var(--radius-md); padding: 12px; margin-bottom: 14px;">
+          <label class="form-label" style="color: var(--primary-teal); font-weight: 700;">
+            <i class="fa-solid fa-user-lock"></i> Kim sifatida ro'yxatdan o'tasiz?
+          </label>
+          <select id="regRole" class="form-select" style="font-weight: 700;">
+            <option value="doctor">🩺 Shifokor</option>
+            <option value="patient">🏥 Bemor</option>
+            <option value="researcher">🔬 Tadqiqotchi</option>
+            <option value="pharmacy">💊 Dorixona Egasi</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" data-i18n="password">Parol</label>
+          <input type="password" id="regPassword" class="form-input" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn btn-emerald" style="width: 100%; justify-content: center; margin-top: 10px;">
+          <i class="fa-solid fa-user-plus"></i> <span data-i18n="registerBtn">Ro'yxatdan O'tish</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ANONYMOUS REVIEW SUBMIT -->
+  <div id="reviewSubmitModal" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal('reviewSubmitModal')"><i class="fa-solid fa-xmark"></i></button>
+      <h2 style="margin-bottom: 16px; color: var(--primary-teal);" data-i18n="writeReview">Anonim Fikr Qoldirish</h2>
+      <form onsubmit="submitAnonymousReview(event)">
+        <input type="hidden" id="reviewDocId" />
+        <div class="form-group">
+          <label class="form-label">Baho (1 dan 5 yulduzgacha)</label>
+          <select id="reviewRatingSelect" class="form-select">
+            <option value="5">★★★★★ 5 Yulduz — A'lo</option>
+            <option value="4">★★★★☆ 4 Yulduz — Yaxshi</option>
+            <option value="3">★★★☆☆ 3 Yulduz — O'rtacha</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fikr Kategoriyasi</label>
+          <select id="reviewCategorySelect" class="form-select">
+            <option value="Davolash Aniqligi">Davolash Aniqligi</option>
+            <option value="Shifokor E'tibori">Shifokor E'tibori</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Yozma Izoh</label>
+          <textarea id="reviewText" class="form-textarea" rows="4" placeholder="Izohingizni yozing..." required></textarea>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('reviewSubmitModal')">Bekor qilish</button>
+          <button type="submit" class="btn btn-primary">Fikrni Yuborish</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- App Scripts -->
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

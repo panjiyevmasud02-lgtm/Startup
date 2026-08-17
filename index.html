@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0; url=frontend/index.html">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TwinCare AI — Yo'naltirilmoqda...</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%);
+      color: #0F172A;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 520px;
+      width: 92%;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(2, 132, 199, 0.08);
+    }
+    .brand-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #0284C7 0%, #10B981 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin: 0 auto 16px;
+    }
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #0284C7;
+      margin-bottom: 8px;
+    }
+    .tagline {
+      font-size: 0.82rem;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    .status {
+      background: #F0F9FF;
+      border: 1px solid rgba(14, 165, 233, 0.2);
+      color: #0284C7;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid #E2E8F0;
+      border-top-color: #0284C7;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .manual-box {
+      text-align: left;
+      background: #F8FAFC;
+      border: 1px dashed #CBD5E1;
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 0.85rem;
+      color: #475569;
+      line-height: 1.6;
+    }
+    .manual-box strong { color: #0F172A; }
+    .manual-box code {
+      background: #1E293B;
+      color: #FCD34D;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-family: 'Consolas', monospace;
+      display: inline-block;
+      margin: 4px 0;
+    }
+    a.btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #0284C7;
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      margin-top: 20px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    a.btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.25);
+    }
+    a.btn.secondary {
+      background: #10B981;
+      margin-left: 8px;
+    }
+    .demo-badge {
+      display: inline-block;
+      background: rgba(245, 158, 11, 0.12);
+      color: #B45309;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="demo-badge"><i class="fa-solid fa-flask"></i> DEMO REJIM</span>
+    <div class="brand-icon"><i class="fa-solid fa-dna"></i></div>
+    <h1>TwinCare AI</h1>
+    <p class="tagline">Klinik Digital Twin va Tibbiy Intellekt Platformasi</p>
+    <div class="status"><span class="spinner"></span> Ilovaga yo'naltirilmoqda...</div>
+    <div class="manual-box">
+      <p><i class="fa-solid fa-circle-info" style="color:#0284C7;"></i> Agar avtomatik o'tish ishlamasa:</p>
+      <p style="margin-top:8px;">
+        <strong>1. Tavsiya etilgan usul:</strong> Terminalda quyidagi buyruqni bajarib, Express serverni ishga tushuring:<br>
+        <code>npm start</code>
+      </p>
+      <p style="margin-top:8px;">Keyin brauzeringizda quyidagi manzilga o'ting: <code style="color:#86EFAC;">http://localhost:5000</code></p>
+      <p style="margin-top:8px;"><strong>2. Yoki shaxsan o'tish:</strong><br></p>
+    </div>
+    <a href="frontend/index.html" class="btn"><i class="fa-solid fa-arrow-right"></i> Ilovaga o'tish</a>
+    <a href="http://localhost:5000" class="btn secondary" target="_blank"><i class="fa-solid fa-server"></i> Server orqali ochish</a>
+  </div>
+</body>
+</html>
